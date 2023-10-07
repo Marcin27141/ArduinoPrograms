@@ -1,0 +1,4 @@
+[wokwi]
+version=1
+firmware='testSketch.ino.hex'
+elf='testSketch.ino.elf'
