@@ -6,6 +6,9 @@
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 
+OneWire oneWire(A1);
+DallasTemperature sensors(&oneWire);
+
 #define POTENTIOMETER A0
 
 #define LED_RED 6
@@ -254,13 +257,56 @@ void testPotencjometer()
   lcd.clear();
 }
 
+void initSensors()
+{
+  sensors.begin();
+}
+
+void testSensors()
+{
+  lcd.clear();
+  lcd.print("Temp. 1|Temp. 2");
+  lcd.setCursor(0, 1);
+  lcd.print("Stop: Red Btn");
+  delay(2000);
+  lcd.clear();
+  lcd.print("Temp. 1|Temp. 2");
+
+  EIFR |= (1 << INTF0);
+  attachInterrupt(digitalPinToInterrupt(RED_BUTTON), setRedPressed, FALLING);
+  redPressed = false;
+  while (redPressed == false)
+  {
+    sensors.requestTemperatures();
+    float temp1 = sensors.getTempCByIndex(0);
+    float temp2 = sensors.getTempCByIndex(1);
+    lcd.setCursor(0, 1);
+    lcd.print("                ");
+    lcd.setCursor(0, 1);
+    lcd.print(temp1);
+    lcd.print("  |");
+    lcd.print(temp2);
+
+    Serial.print("Temp. 1 = ");
+    Serial.print(temp1);
+    Serial.print(" Temp. 2 = ");
+    Serial.println(temp2);
+  }
+  detachInterrupt(digitalPinToInterrupt(RED_BUTTON));
+  digitalWrite(LED_BLUE, HIGH);
+  delay(1000);
+  digitalWrite(LED_BLUE, LOW);
+  lcd.clear();
+}
+
 void setup() {
   initLCD();
   initRGB();
   initButtons();
   initEncoder();
+  initSensors();
 
-  testPotencjometer();
+  testSensors();
 }
 
 void loop() {
