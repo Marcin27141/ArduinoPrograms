@@ -1,7 +1,12 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 LiquidCrystal_I2C lcd(0x27,16,2);
+
+#define POTENTIOMETER A0
 
 #define LED_RED 6
 #define LED_GREEN 5
@@ -13,9 +18,12 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 #define ENCODER1 A2
 #define ENCODER2 A3
 
-#define SW A1
-#define DT A2
-#define CLK A3
+volatile bool redPressed = false;
+
+void setRedPressed()
+{
+  redPressed = true;
+}
 
 void initEncoder()
 {
@@ -201,70 +209,59 @@ void testEncoder()
   lcd.clear();
 }
 
-/*int counter = 0;
-int currentStateCLK;
-int lastStateCLK;
-String currentDir ="";
-unsigned long lastButtonPress = 0;*/
+void testPotencjometer()
+{
+  lcd.print("Potenciometer: ");
+  lcd.setCursor(0, 1);
+  lcd.print("Turn full range");
+
+  int refval = analogRead(POTENTIOMETER);
+  int val = refval;
+  while (refval - 10 < val & val < refval + 10)
+  {
+    val = analogRead(POTENTIOMETER);
+  }
+
+  int min = val;
+  int max = val;
+
+  lcd.clear();
+  lcd.print("Potentiometer");
+  while (min > 100 || max < 1023 - 100)
+  {
+    val = analogRead(POTENTIOMETER); // read the input pin
+    //Serial.println(val);
+    lcd.setCursor(5, 1);
+    lcd.print("ADC =     ");
+    lcd.setCursor(11, 1);
+    lcd.print(val);
+
+    if (val < min)
+    {
+      min = val;
+    }
+
+    if (val > max)
+    {
+      max = val;
+    }
+
+    delay(20);
+  }
+  digitalWrite(LED_BLUE, HIGH);
+  delay(1000);
+  digitalWrite(LED_BLUE, LOW);
+  lcd.clear();
+}
 
 void setup() {
   initLCD();
   initRGB();
   initButtons();
   initEncoder();
-  Serial.begin(9600);
 
-  /*pinMode(CLK,INPUT);
-	pinMode(DT,INPUT);
-	pinMode(SW, INPUT_PULLUP);
-  Serial.begin(9600);
-  lastStateCLK = digitalRead(CLK);*/
-
-  testEncoder();
+  testPotencjometer();
 }
 
 void loop() {
-  /*currentStateCLK = digitalRead(CLK);
-
-	// If last and current state of CLK are different, then pulse occurred
-	// React to only 1 state change to avoid double count
-	if (currentStateCLK != lastStateCLK  && currentStateCLK == 1){
-
-		// If the DT state is different than the CLK state then
-		// the encoder is rotating CCW so decrement
-		if (digitalRead(DT) != currentStateCLK) {
-			counter --;
-			currentDir ="CCW";
-		} else {
-			// Encoder is rotating CW so increment
-			counter ++;
-			currentDir ="CW";
-		}
-
-		Serial.print("Direction: ");
-		Serial.print(currentDir);
-		Serial.print(" | Counter: ");
-		Serial.println(counter);
-	}
-
-	// Remember last CLK state
-	lastStateCLK = currentStateCLK;
-
-	// Read the button state
-	int btnState = digitalRead(SW);
-
-	//If we detect LOW signal, button is pressed
-	if (btnState == LOW) {
-		//if 50ms have passed since last LOW pulse, it means that the
-		//button has been pressed, released and pressed again
-		if (millis() - lastButtonPress > 50) {
-			Serial.println("Button pressed!");
-		}
-
-		// Remember last button press event
-		lastButtonPress = millis();
-	}
-
-	// Put in a slight delay to help debounce the reading
-	delay(1);*/
 }
