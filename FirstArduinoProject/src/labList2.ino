@@ -56,6 +56,16 @@ void initSensors()
   sensors.begin();
 }
 
+//----------------------task1------------------------
+//green button changes color, red button turns on/off
+
+int greenBtn = HIGH;
+int redBtn = HIGH;
+bool turnedOn = true;
+int redState = HIGH;
+int greenState = LOW;
+int blueState = LOW;
+
 void initializeForTask1() {
   digitalWrite(LED_RED, HIGH);
   digitalWrite(LED_GREEN, LOW);
@@ -65,19 +75,6 @@ void initializeForTask1() {
   lcd.setCursor(0, 1);
   lcd.print("RED: TURN ON/OFF");
 }
-
-int greenBtn = HIGH;
-int redBtn = HIGH;
-bool turnedOn = true;
-int redState = HIGH;
-int greenState = LOW;
-int blueState = LOW;
-
-
-
-
-//----------------------task1------------------------
-//green button changes color, red button turns on/off
 
 void runTask1() {
   int delayTime = 400;
@@ -138,31 +135,36 @@ void turnLeds() {
 }
 
 //------------------------task2-----------------------------
+//LED PWM presentation - red button makes led brighter, green button - darker
 
-//LED PWM presentation - intensity changes on button press
+void initializeForTask2(int analogVal) {
+  lcd.clear();
+  lcd.print("GREEN: DARKER");
+  lcd.setCursor(0, 1);
+  lcd.print("RED: BRIGHTER");
+
+  analogWrite(LED_RED, analogVal);
+}
+
 void runTask2() {
   int analogVal = 150;
-  analogWrite(LED_RED, analogVal);
-  int b1 = HIGH;
-  int b2 = HIGH;
+  int redBtn = HIGH;
+  int greenBtn = HIGH;
+  initializeForTask2(analogVal);
   
   while (true) {
-    b1 = digitalRead(RED_BUTTON);
-    if (b1 == LOW && analogVal < (255 - 10)) {
+    redBtn = digitalRead(RED_BUTTON);
+    if (redBtn == LOW && analogVal < (255 - 10)) {
       analogVal = analogVal + 10;
     }
 
-    b2 = digitalRead(GREEN_BUTTON);
-    if (b2 == LOW && analogVal > (0 + 10)) {
+    greenBtn = digitalRead(GREEN_BUTTON);
+    if (greenBtn == LOW && analogVal > (0 + 10)) {
       analogVal = analogVal - 10;
     }
     analogWrite(LED_RED, analogVal);
     delay(200);
   }
-  analogWrite(LED_RED, 64);
-  delay(1000);
-  analogWrite(LED_RED, 255);
-  delay(1000);
 }
 
 void setup() {
@@ -170,7 +172,7 @@ void setup() {
   initRGB();
   initButtons();
 
-  runTask1();
+  runTask2();
 }
 
 void loop() {
