@@ -56,48 +56,88 @@ void initSensors()
   sensors.begin();
 }
 
-//buttons demonstration
-void runTask1() {
-  digitalWrite(LED_BLUE, LOW);
-  digitalWrite(LED_RED, LOW);
+void initializeForTask1() {
+  digitalWrite(LED_RED, HIGH);
   digitalWrite(LED_GREEN, LOW);
+  digitalWrite(LED_BLUE, LOW);
   lcd.clear();
-  lcd.print("Press a button");
+  lcd.print("GREEN: COLOR");
   lcd.setCursor(0, 1);
-  delay(1000);
-  int b1 = HIGH;
-  int b2 = HIGH;
-  while ((b1 == HIGH) && (b2 == HIGH))
-  {
-    b1 = digitalRead(RED_BUTTON);
-    if (b1 == LOW) {
-      digitalWrite(LED_RED, HIGH);
-      lcd.print("RED PRESSED");
-    }
-    else
-      digitalWrite(LED_RED, LOW);
-
-    b2 = digitalRead(GREEN_BUTTON);
-    if (b2 == LOW) {
-      digitalWrite(LED_GREEN, HIGH);
-      lcd.print("GREEN PRESSED");
-    }
-    else
-      digitalWrite(LED_GREEN, LOW);
-  }
-  delay(1000);
-  digitalWrite(LED_RED, LOW);
-  digitalWrite(LED_GREEN, LOW);
-  digitalWrite(LED_BLUE, HIGH);
-  while ((b1 == LOW) || (b2 == LOW))
-  {
-    b1 = digitalRead(RED_BUTTON);
-    b2 = digitalRead(GREEN_BUTTON);
-  }
-  delay(1000);
-  digitalWrite(LED_BLUE, LOW);
-  lcd.clear();
+  lcd.print("RED: TURN ON/OFF");
 }
+
+int greenBtn = HIGH;
+int redBtn = HIGH;
+bool turnedOn = true;
+int redState = HIGH;
+int greenState = LOW;
+int blueState = LOW;
+
+
+
+
+//----------------------task1------------------------
+//green button changes color, red button turns on/off
+
+void runTask1() {
+  int delayTime = 400;
+  initializeForTask1();
+  delay(delayTime);
+
+  while (true)
+  {
+    redBtn = digitalRead(RED_BUTTON);
+    if (redBtn == LOW) {
+      turnLeds();
+      delay(delayTime);
+    }
+
+    greenBtn = digitalRead(GREEN_BUTTON);
+    if (greenBtn == LOW) {
+      switchColor();
+      if (turnedOn)
+        showColor();
+      delay(delayTime);
+    }
+  }
+}
+
+void switchColor() {
+  if (redState == HIGH) {
+    redState = LOW;
+    greenState = HIGH;
+  }
+  else if (greenState == HIGH) {
+    greenState = LOW;
+    blueState = HIGH;
+  }
+  else if (blueState == HIGH) {
+    blueState = LOW;
+    redState = HIGH;
+  }
+}
+
+void showColor() {
+  digitalWrite(LED_RED, redState);
+  digitalWrite(LED_GREEN, greenState);
+  digitalWrite(LED_BLUE, blueState);
+}
+
+void turnLeds() {
+  if (turnedOn == true) {
+    digitalWrite(LED_RED, LOW);
+    digitalWrite(LED_GREEN, LOW);
+    digitalWrite(LED_BLUE, LOW);
+    turnedOn = false;
+  } else {
+    digitalWrite(LED_RED, redState);
+    digitalWrite(LED_GREEN, greenState);
+    digitalWrite(LED_BLUE, blueState);
+    turnedOn = true;
+  }
+}
+
+//------------------------task2-----------------------------
 
 //LED PWM presentation - intensity changes on button press
 void runTask2() {
@@ -130,7 +170,7 @@ void setup() {
   initRGB();
   initButtons();
 
-  runTask2();
+  runTask1();
 }
 
 void loop() {
