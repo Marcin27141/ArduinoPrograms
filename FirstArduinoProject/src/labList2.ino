@@ -135,15 +135,15 @@ void turnLeds() {
 }
 
 //------------------------task2-----------------------------
-//LED PWM presentation - red button makes led brighter, green button - darker
+//LED PWM presentation - red button makes led darker, green button - brighter
 
 void initializeForTask2(int analogVal) {
   lcd.clear();
-  lcd.print("GREEN: DARKER");
+  lcd.print("GREEN: BRIGHTER");
   lcd.setCursor(0, 1);
-  lcd.print("RED: BRIGHTER");
+  lcd.print("RED: DARKER");
 
-  analogWrite(LED_RED, analogVal);
+  analogWrite(LED_GREEN, analogVal);
 }
 
 void runTask2() {
@@ -153,26 +153,81 @@ void runTask2() {
   initializeForTask2(analogVal);
   
   while (true) {
-    redBtn = digitalRead(RED_BUTTON);
-    if (redBtn == LOW && analogVal < (255 - 10)) {
+    greenBtn = digitalRead(GREEN_BUTTON);
+    if (greenBtn == LOW && analogVal < (255 - 10)) {
       analogVal = analogVal + 10;
     }
 
-    greenBtn = digitalRead(GREEN_BUTTON);
-    if (greenBtn == LOW && analogVal > (0 + 10)) {
+    redBtn = digitalRead(RED_BUTTON);
+    if (redBtn == LOW && analogVal > (0 + 10)) {
       analogVal = analogVal - 10;
     }
-    analogWrite(LED_RED, analogVal);
+    analogWrite(LED_GREEN, analogVal);
     delay(200);
   }
 }
+
+//------------------------task3-----------------------------
+//on green button press, led fluently changes colors: red, green, blue, red, ... 
+
+int singleStep = 255/100;
+int redAnalogVal = 255;
+int greenAnalogVal = 0;
+int blueAnalogVal = 0;
+
+void initializeForTask3() {
+  lcd.clear();
+  lcd.print("PRESS GREEN TO");
+  lcd.setCursor(0, 1);
+  lcd.print("CHANGE COLOR");
+
+  analogWrite(LED_RED, redAnalogVal);
+}
+
+void runTask3() {
+  int greenBtn = HIGH;
+  initializeForTask3();
+  
+  while (true) {
+    greenBtn = digitalRead(GREEN_BUTTON);
+    if (greenBtn == LOW) {
+      changeColorIntensity();
+      showUpdatedIntensity();
+    }
+    
+    delay(45);
+  }
+}
+
+void changeColorIntensity() {
+  if (redAnalogVal > singleStep && blueAnalogVal <= singleStep) {
+    redAnalogVal -= singleStep;
+    greenAnalogVal += singleStep;
+  }
+  else if (greenAnalogVal > singleStep) {
+    greenAnalogVal -= singleStep;
+    blueAnalogVal += singleStep;
+  }
+  else if (blueAnalogVal > singleStep) {
+    blueAnalogVal -= singleStep;
+    redAnalogVal += singleStep;
+  }
+}
+
+void showUpdatedIntensity() {
+  analogWrite(LED_RED, redAnalogVal);
+  analogWrite(LED_GREEN, greenAnalogVal);
+  analogWrite(LED_BLUE, blueAnalogVal);
+}
+
+//--------------------------main------------------
 
 void setup() {
   initLCD();
   initRGB();
   initButtons();
 
-  runTask2();
+  runTask3();
 }
 
 void loop() {
