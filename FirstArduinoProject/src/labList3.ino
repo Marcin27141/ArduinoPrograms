@@ -34,119 +34,92 @@ void initButtons()
 
 //taks 1
 //switch led into R>G>B>R>... whenever red or green button is pressed
+// int leds[] = {LED_RED, LED_GREEN, LED_BLUE};
+// int led_index = 0;
+
+// #define DEBOUNCE_PERIOD 10UL
+// int buttons[] = {GREEN_BUTTON, RED_BUTTON};
+// int debouncedStates[] = {HIGH, HIGH};
+// int previousReadings[] = {HIGH, HIGH};
+// unsigned long lastChanged[] = {0UL, 0UL};
+
+// bool isButtonPressed(int buttonId) {
+//     bool isPressed = false;
+//     int current_reading = digitalRead(buttons[buttonId]);
+
+//     if (previousReadings[buttonId] != current_reading)
+//     {
+//         lastChanged[buttonId] = millis();
+//     }
+
+//     if (millis() - lastChanged[buttonId] > DEBOUNCE_PERIOD)
+//     {
+//         if(current_reading != debouncedStates[buttonId])
+//         {
+//             if (debouncedStates[buttonId] == HIGH && current_reading == LOW)
+//             {
+//                 isPressed = true;
+//             }
+//             debouncedStates[buttonId] = current_reading;
+//         }
+//     }
+
+//     previousReadings[buttonId] = current_reading;
+//     return isPressed;
+// }
+
+// void switchLed() {
+//   digitalWrite(leds[led_index], LOW);
+//   led_index = ++led_index % 3;
+//   digitalWrite(leds[led_index], HIGH);
+// }
+
+// void setup()
+// {
+//     initButtons();
+//     initRGB();
+//     digitalWrite(LED_RED, HIGH);
+// }
+
+
+// void loop()
+// {
+//     for (int i = 0; i < 2; i++)
+//         if (isButtonPressed(i))
+//             switchLed();
+// }
+
+//task 2
+//"simultaneously" changing led lights
 int leds[] = {LED_RED, LED_GREEN, LED_BLUE};
-int led_index = 0;
-
-#define DEBOUNCE_PERIOD 10UL
-int buttons[] = {GREEN_BUTTON, RED_BUTTON};
-int debouncedStates[] = {HIGH, HIGH};
-int previousReadings[] = {HIGH, HIGH};
-unsigned long lastChanged[] = {0UL, 0UL};
-
-bool isButtonPressed(int buttonId) {
-    bool isPressed = false;
-    int current_reading = digitalRead(buttons[buttonId]);
-
-    if (previousReadings[buttonId] != current_reading)
-    {
-        lastChanged[buttonId] = millis();
-    }
-
-    if (millis() - lastChanged[buttonId] > DEBOUNCE_PERIOD)
-    {
-        if(current_reading != debouncedStates[buttonId])
-        {
-            if (debouncedStates[buttonId] == HIGH && current_reading == LOW)
-            {
-                isPressed = true;
-            }
-            debouncedStates[buttonId] = current_reading;
-        }
-    }
-
-    previousReadings[buttonId] = current_reading;
-    return isPressed;
-}
-
-// bool isGreenButtonPressed()
-// {
-//     static int debounced_button_state = HIGH;
-//     static int previous_reading = HIGH;
-//     static unsigned long last_change_time = 0UL;
-//     bool isPressed = false;
-
-//     int current_reading = digitalRead(GREEN_BUTTON);
-
-//     if (previous_reading != current_reading)
-//     {
-//         last_change_time = millis();
-//     }
-
-//     if (millis() - last_change_time > DEBOUNCE_PERIOD)
-//     {
-//         if(current_reading != debounced_button_state)
-//         {
-//             if (debounced_button_state == HIGH && current_reading == LOW)
-//             {
-//                 isPressed = true;
-//             }
-//             debounced_button_state = current_reading;
-//         }
-//     }
-
-//     previous_reading = current_reading;
-
-//     return isPressed;
-// }
-
-// bool isRedButtonPressed()
-// {
-//     static int debounced_button_state = HIGH;
-//     static int previous_reading = HIGH;
-//     static unsigned long last_change_time = 0UL;
-//     bool isPressed = false;
-
-//     int current_reading = digitalRead(RED_BUTTON);
-
-//     if (previous_reading != current_reading)
-//     {
-//         last_change_time = millis();
-//     }
-
-//     if (millis() - last_change_time > DEBOUNCE_PERIOD)
-//     {
-//         if(current_reading != debounced_button_state)
-//         {
-//             if (debounced_button_state == HIGH && current_reading == LOW)
-//             {
-//                 isPressed = true;
-//             }
-//             debounced_button_state = current_reading;
-//         }
-//     }
-
-//     previous_reading = current_reading;
-
-//     return isPressed;
-// }
-
-void switchLed() {
-  digitalWrite(leds[led_index], LOW);
-  led_index = ++led_index % 3;
-  digitalWrite(leds[led_index], HIGH);
-}
+int ledsStates[] {LOW, LOW, LOW};
+unsigned long turnTimes[] = {900UL, 1000UL, 1100UL};
+unsigned long lastChanged[] = {0UL, 0UL, 0UL};
 
 void setup()
 {
-    initButtons();
     initRGB();
-    digitalWrite(LED_RED, HIGH);
+    initButtons();
+}
+
+void blinkLedIfTime(int i) {
+  if (millis() - lastChanged[i] >= turnTimes[i])
+  {
+    if (ledsStates[i] == HIGH) {
+      ledsStates[i] = LOW;
+    }
+    else {
+      ledsStates[i] = HIGH;
+    }
+    digitalWrite(leds[i], ledsStates[i]);
+    lastChanged[i] += turnTimes[i];
+  }
 }
 
 
 void loop()
 {
-    for (int i = 0; i < 2; i++)
-        if (isButtonPressed(i))
-            switchLed();
+  for (int i = 0; i < 3; i++) {
+    blinkLedIfTime(i);
+  }
 }
