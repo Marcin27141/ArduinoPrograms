@@ -13,6 +13,8 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 #define RED_BUTTON 2
 #define GREEN_BUTTON 4
 
+#define POTENTIOMETER A0
+
 void initLCD()
 {
   lcd.init();
@@ -164,44 +166,61 @@ void initButtons()
 //     }
 // }
 
-//zadanie 3
+//task 3
 //showing on lcd potentiometer real and read value
 
-void printValuesOnLcd(int sensor, float real) {
-  lcd.setCursor(12, 0);
-  char paddedSensorValue[5];
-  sprintf(paddedSensorValue, "%4d", sensor);
-  lcd.print(paddedSensorValue);
+// void printValuesOnLcd(int sensor, float real) {
+//   lcd.setCursor(12, 0);
+//   char paddedSensorValue[5];
+//   sprintf(paddedSensorValue, "%4d", sensor);
+//   lcd.print(paddedSensorValue);
 
-  lcd.setCursor(12, 1);
-  char paddedRealValue[10];
-  dtostrf(real, 3, 2, paddedRealValue);
-  lcd.print(paddedRealValue);
-}
+//   lcd.setCursor(12, 1);
+//   char paddedRealValue[10];
+//   dtostrf(real, 3, 2, paddedRealValue);
+//   lcd.print(paddedRealValue);
+// }
 
 
 
+// void setup()
+// {
+//   initLCD();
+
+//   lcd.setCursor(0, 0);
+//   lcd.print("Sensor:");
+//   lcd.setCursor(0, 1);
+//   lcd.print("Real:");
+
+//   Serial.begin(9600);
+// }
+
+// #define REF_VOLTAGE 5.0
+// #define RESOLUTION 1024
+
+// int sensorValue = 0; 
+// float sensorRealValue = 0;
+
+// void loop()
+// {
+//     sensorValue = analogRead(POTENTIOMETER);
+//     sensorRealValue = REF_VOLTAGE / RESOLUTION * sensorValue;
+//     printValuesOnLcd(sensorValue, sensorRealValue);
+// }
+
+//task 4
+//oberving sensor readings on serial monitor and serial plotter
 void setup()
 {
-  initLCD();
-
-  lcd.setCursor(0, 0);
-  lcd.print("Sensor:");
-  lcd.setCursor(0, 1);
-  lcd.print("Real:");
-
   Serial.begin(9600);
+  while(!Serial) {}
+
 }
 
-#define REF_VOLTAGE 5.0
-#define RESOLUTION 1024
-
 int sensorValue = 0; 
-float sensorRealValue = 0;
 
 void loop()
 {
     sensorValue = analogRead(POTENTIOMETER);
-    sensorRealValue = REF_VOLTAGE / RESOLUTION * sensorValue;
-    printValuesOnLcd(sensorValue, sensorRealValue);
+    Serial.println(sensorValue);
 }
