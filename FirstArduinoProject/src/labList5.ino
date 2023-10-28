@@ -41,7 +41,7 @@ void initEncoder()
   pinMode(ENCODER2, INPUT_PULLUP);
 }
 
-#define DEBOUNCING_PERIOD 100
+#define BUTTON_DEBOUNCE_PERIOD 100
 
 String menuOptions[] = {
   "LED Red",
@@ -55,17 +55,17 @@ int numberOfMenuOptions = sizeof(menuOptions) / sizeof(menuOptions[0]);
 int menuTopItem = 0;
 
 void printMenu() {
-  printMenuOption(0, menuTopItem);
-  int nextItem = (menuTopItem + 1) % numberOfMenuOptions;
-  printMenuOption(1, nextItem);
-}
+    char fstBuffer[17];
+    sprintf(fstBuffer, ">>%-14s", menuOptions[menuTopItem].c_str());
+    lcd.setCursor(0, 0);
+    lcd.print(fstBuffer);
 
-void printMenuOption(int row, int idx)
-{
-    char buffer[17];
-    sprintf(buffer, "%-16s", menuOptions[idx].c_str());
-    lcd.setCursor(0, row);
-    lcd.print(buffer);
+    int nextItem = (menuTopItem + 1) % numberOfMenuOptions;
+
+    char sndBuffer[17];
+    sprintf(sndBuffer, "%-16s", menuOptions[nextItem].c_str());
+    lcd.setCursor(0, 1);
+    lcd.print(sndBuffer);
 }
 
 void printResults(int val)
@@ -76,21 +76,12 @@ void printResults(int val)
     lcd.print(buffer);
 }
 
-void myAction(int val)
-{
-    printResults(val);
-    analogWrite(LED_RED, val);
-    analogWrite(LED_BLUE, 255 - val);
-}
-
 void setup()
 {
-    pinMode(LED_RED, OUTPUT);
-    pinMode(LED_BLUE, OUTPUT);
-    pinMode(ENCODER1, INPUT_PULLUP);
-    pinMode(ENCODER2, INPUT_PULLUP);
-    lcd.init();
-    lcd.backlight();
+  initButtons();
+    initRGB();
+    initEncoder();
+    initLCD();
 
     printMenu();
 
@@ -113,10 +104,7 @@ int encoderValue = 0;
 int lastEn1 = LOW;
 unsigned long lastChangeTimestamp = 0UL;
 
-
-void loop()
-{
-
+void checkMenuScroll() {
     int en1;
     int en2;
     unsigned long timestamp;
@@ -128,7 +116,7 @@ void loop()
         timestamp = encoderTimestamp;
     }
 
-    if (en1 == LOW && timestamp > lastChangeTimestamp + DEBOUNCING_PERIOD)
+    if (en1 == LOW && timestamp > lastChangeTimestamp + BUTTON_DEBOUNCE_PERIOD)
     {
         if (en2 == HIGH)
         {
@@ -142,4 +130,76 @@ void loop()
         lastChangeTimestamp = timestamp;
     }
     lastEn1 = en1;
+}
+
+#define ENCODER_DEBOUNCE_PERIOD 10UL
+int buttons[] = {GREEN_BUTTON, RED_BUTTON};
+int debouncedStates[] = {HIGH, HIGH};
+int previousReadings[] = {HIGH, HIGH};
+unsigned long lastChanged[] = {0UL, 0UL};
+
+bool isButtonPressed() {
+    int greenButtonId = 0;
+
+    bool isPressed = false;
+    int current_reading = digitalRead(buttons[greenButtonId]);
+
+    if (previousReadings[greenButtonId] != current_reading)
+    {
+        lastChanged[greenButtonId] = millis();
+    }
+
+    if (millis() - lastChanged[greenButtonId] > ENCODER_DEBOUNCE_PERIOD)
+    {
+        if(current_reading != debouncedStates[greenButtonId])
+        {
+            if (debouncedStates[greenButtonId] == HIGH && current_reading == LOW)
+            {
+                isPressed = true;
+            }
+            debouncedStates[greenButtonId] = current_reading;
+        }
+    }
+
+    previousReadings[greenButtonId] = current_reading;
+    return isPressed;
+}
+
+void performMenuOption() {
+  switch (menuTopItem) {
+    case 0:
+      digitalWrite(LED_RED, HIGH);
+      digitalWrite(LED_GREEN, LOW);
+      digitalWrite(LED_BLUE, LOW);
+      break;
+    case 1:
+      digitalWrite(LED_RED, LOW);
+      digitalWrite(LED_GREEN, HIGH);
+      digitalWrite(LED_BLUE, LOW);
+      break;
+    case 2:
+      digitalWrite(LED_RED, LOW);
+      digitalWrite(LED_GREEN, LOW);
+      digitalWrite(LED_BLUE, HIGH);
+      break;
+    case 3:
+      digitalWrite(LED_RED, HIGH);
+      digitalWrite(LED_GREEN, HIGH);
+      digitalWrite(LED_BLUE, HIGH);
+      break;
+    case 4:
+      digitalWrite(LED_RED, LOW);
+      digitalWrite(LED_GREEN, LOW);
+      digitalWrite(LED_BLUE, LOW);
+      break;
+    default:
+      break;
+  }
+}
+
+void loop()
+{
+  checkMenuScroll();
+  if (isButtonPressed())
+    performMenuOption();
 }
