@@ -1,40 +1,40 @@
-#include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
-#include <Wire.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+// #include <Arduino.h>
+// #include <LiquidCrystal_I2C.h>
+// #include <Wire.h>
+// #include <OneWire.h>
+// #include <DallasTemperature.h>
 
-LiquidCrystal_I2C lcd(0x27,16,2);
+// LiquidCrystal_I2C lcd(0x27,16,2);
 
-#define LED_RED 6
-#define LED_GREEN 5
-#define LED_BLUE 3
+// #define LED_RED 6
+// #define LED_GREEN 5
+// #define LED_BLUE 3
 
-#define RED_BUTTON 2
-#define GREEN_BUTTON 4
+// #define RED_BUTTON 2
+// #define GREEN_BUTTON 4
 
-#define POTENTIOMETER A0
+// #define POTENTIOMETER A0
 
-void initLCD()
-{
-  lcd.init();
-  lcd.clear();
-  lcd.backlight();
-}
+// void initLCD()
+// {
+//   lcd.init();
+//   lcd.clear();
+//   lcd.backlight();
+// }
 
-void initRGB()
-{
+// void initRGB()
+// {
 
-  pinMode(LED_RED, OUTPUT);
-  pinMode(LED_GREEN, OUTPUT);
-  pinMode(LED_BLUE, OUTPUT);
-}
+//   pinMode(LED_RED, OUTPUT);
+//   pinMode(LED_GREEN, OUTPUT);
+//   pinMode(LED_BLUE, OUTPUT);
+// }
 
-void initButtons()
-{
-  pinMode(RED_BUTTON, INPUT_PULLUP);
-  pinMode(GREEN_BUTTON, INPUT_PULLUP);
-}
+// void initButtons()
+// {
+//   pinMode(RED_BUTTON, INPUT_PULLUP);
+//   pinMode(GREEN_BUTTON, INPUT_PULLUP);
+// }
 
 //task 1
 //notify button states using Serial
@@ -210,17 +210,17 @@ void initButtons()
 
 //task 4
 //oberving sensor readings on serial monitor and serial plotter
-void setup()
-{
-  Serial.begin(9600);
-  while(!Serial) {}
+// void setup()
+// {
+//   Serial.begin(9600);
+//   while(!Serial) {}
 
-}
+// }
 
-int sensorValue = 0; 
+// int sensorValue = 0; 
 
-void loop()
-{
-    sensorValue = analogRead(POTENTIOMETER);
-    Serial.println(sensorValue);
-}
+// void loop()
+// {
+//     sensorValue = analogRead(POTENTIOMETER);
+//     Serial.println(sensorValue);
+// }
