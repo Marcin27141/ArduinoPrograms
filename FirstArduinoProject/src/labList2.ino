@@ -1,4 +1,6 @@
-// #include <Arduino.h>
+#include <Initializer.h>
+
+//#include <Arduino.h>
 // #include <LiquidCrystal_I2C.h>
 // #include <Wire.h>
 // #include <OneWire.h>
@@ -56,86 +58,100 @@
 //   sensors.begin();
 // }
 
-// //----------------------task1------------------------
-// //green button changes color, red button turns on/off
+//----------------------task1------------------------
+//green button changes color, red button turns on/off
 
-// int greenBtn = HIGH;
-// int redBtn = HIGH;
-// bool turnedOn = true;
-// int redState = HIGH;
-// int greenState = LOW;
-// int blueState = LOW;
+int greenBtn = HIGH;
+int redBtn = HIGH;
+bool turnedOn = true;
+int redState = HIGH;
+int greenState = LOW;
+int blueState = LOW;
 
-// void initializeForTask1() {
-//   digitalWrite(LED_RED, HIGH);
-//   digitalWrite(LED_GREEN, LOW);
-//   digitalWrite(LED_BLUE, LOW);
-//   lcd.clear();
-//   lcd.print("GREEN: COLOR");
-//   lcd.setCursor(0, 1);
-//   lcd.print("RED: TURN ON/OFF");
-// }
+void initializeForTask1(Initializer initializer) {
+  initializer.initLCD();
+  LiquidCrystal_I2C lcd = initializer.getLCD();
+  digitalWrite(LED_RED, HIGH);
+  digitalWrite(LED_GREEN, LOW);
+  digitalWrite(LED_BLUE, LOW);
+  lcd.setCursor(0, 0);
+  lcd.print("GREEN: COLOR");
+  lcd.setCursor(0, 1);
+  lcd.print("RED: TURN ON/OFF");
+}
 
-// void runTask1() {
-//   int delayTime = 400;
-//   initializeForTask1();
-//   delay(delayTime);
+void runTask1() {
+  int delayTime = 400;
+  
+  delay(delayTime);
 
-//   while (true)
-//   {
-//     redBtn = digitalRead(RED_BUTTON);
-//     if (redBtn == LOW) {
-//       turnLeds();
-//       delay(delayTime);
-//     }
+  while (true)
+  {
+    redBtn = digitalRead(RED_BUTTON);
+    if (redBtn == LOW) {
+      turnLeds();
+      delay(delayTime);
+    }
 
-//     greenBtn = digitalRead(GREEN_BUTTON);
-//     if (greenBtn == LOW) {
-//       switchColor();
-//       if (turnedOn)
-//         showColor();
-//       delay(delayTime);
-//     }
-//   }
-// }
+    greenBtn = digitalRead(GREEN_BUTTON);
+    if (greenBtn == LOW) {
+      switchColor();
+      if (turnedOn)
+        showColor();
+      delay(delayTime);
+    }
+  }
+}
 
-// void switchColor() {
-//   if (redState == HIGH) {
-//     redState = LOW;
-//     greenState = HIGH;
-//   }
-//   else if (greenState == HIGH) {
-//     greenState = LOW;
-//     blueState = HIGH;
-//   }
-//   else if (blueState == HIGH) {
-//     blueState = LOW;
-//     redState = HIGH;
-//   }
-// }
+void switchColor() {
+  if (redState == HIGH) {
+    redState = LOW;
+    greenState = HIGH;
+  }
+  else if (greenState == HIGH) {
+    greenState = LOW;
+    blueState = HIGH;
+  }
+  else if (blueState == HIGH) {
+    blueState = LOW;
+    redState = HIGH;
+  }
+}
 
-// void showColor() {
-//   digitalWrite(LED_RED, redState);
-//   digitalWrite(LED_GREEN, greenState);
-//   digitalWrite(LED_BLUE, blueState);
-// }
+void showColor() {
+  digitalWrite(LED_RED, redState);
+  digitalWrite(LED_GREEN, greenState);
+  digitalWrite(LED_BLUE, blueState);
+}
 
-// void turnLeds() {
-//   if (turnedOn == true) {
-//     digitalWrite(LED_RED, LOW);
-//     digitalWrite(LED_GREEN, LOW);
-//     digitalWrite(LED_BLUE, LOW);
-//     turnedOn = false;
-//   } else {
-//     digitalWrite(LED_RED, redState);
-//     digitalWrite(LED_GREEN, greenState);
-//     digitalWrite(LED_BLUE, blueState);
-//     turnedOn = true;
-//   }
-// }
+void turnLeds() {
+  if (turnedOn == true) {
+    digitalWrite(LED_RED, LOW);
+    digitalWrite(LED_GREEN, LOW);
+    digitalWrite(LED_BLUE, LOW);
+    turnedOn = false;
+  } else {
+    digitalWrite(LED_RED, redState);
+    digitalWrite(LED_GREEN, greenState);
+    digitalWrite(LED_BLUE, blueState);
+    turnedOn = true;
+  }
+}
 
-// //------------------------task2-----------------------------
-// //LED PWM presentation - red button makes led darker, green button - brighter
+void setup() {
+  Initializer initializer = Initializer();
+  initializer.initRGB();
+  initializer.initButtons();
+
+  initializeForTask1(initializer);
+  runTask1();
+}
+
+void loop() {
+}
+
+//------------------------task2-----------------------------
+//LED PWM presentation - red button makes led darker, green button - brighter
 
 // void initializeForTask2(int analogVal) {
 //   lcd.clear();
@@ -221,15 +237,3 @@
 // }
 
 // //--------------------------main------------------
-
-// void setup() {
-//   initLCD();
-//   initRGB();
-//   initButtons();
-
-//   runTask3();
-// }
-
-// void loop() {
-  
-// }
