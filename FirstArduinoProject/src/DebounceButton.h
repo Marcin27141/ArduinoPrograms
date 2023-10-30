@@ -2,9 +2,6 @@
 #define debounceButton_h
 
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
-#include <Wire.h>
-#include <DallasTemperature.h>
 
 const int GREEN_BUTTON_INDEX = 0;
 const int RED_BUTTON_INDEX = 1;
