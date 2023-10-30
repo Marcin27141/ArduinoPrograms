@@ -1,23 +1,17 @@
 #include <Initializer.h>
+#include <DebounceButton.h>
 
 //----------------------task1------------------------
 //green button changes color, red button turns on/off
-// int buttons[] = {GREEN_BUTTON, RED_BUTTON};
-// int buttonsStates[] = {HIGH, HIGH};
 int leds[] = {LED_RED, LED_GREEN, LED_BLUE};
 const int LED_RED_INDEX = 0;
 const int LED_GREEN_INDEX = 1;
 const int LED_BLUE_INDEX = 2;
 int currectLedOn;
-bool turnedOn;
+bool turnedOn = true;;
 
-#define DEBOUNCE_PERIOD 10UL
-int buttons[] = {GREEN_BUTTON, RED_BUTTON};
-const int GREEN_BUTTON_INDEX = 0;
-const int RED_BUTTON_INDEX = 1;
-int debouncedStates[] = {HIGH, HIGH};
-int previousReadings[] = {HIGH, HIGH};
-unsigned long lastChanged[] = {0UL, 0UL};
+DebounceButton* greenDebounceButton;
+DebounceButton* redDebounceButton;
 
 void initializeForTask1(LiquidCrystal_I2C* lcd) {
   currectLedOn = LED_RED_INDEX;
@@ -29,42 +23,13 @@ void initializeForTask1(LiquidCrystal_I2C* lcd) {
   lcd->print("RED: TURN ON/OFF");
 }
 
-bool isButtonPressed(int buttonId) {
-    bool isPressed = false;
-    int current_reading = digitalRead(buttons[buttonId]);
-
-    if (previousReadings[buttonId] != current_reading)
-    {
-        lastChanged[buttonId] = millis();
-    }
-
-    if (millis() - lastChanged[buttonId] > DEBOUNCE_PERIOD)
-    {
-        if(current_reading != debouncedStates[buttonId])
-        {
-            if (debouncedStates[buttonId] == HIGH && current_reading == LOW)
-            {
-                isPressed = true;
-            }
-            debouncedStates[buttonId] = current_reading;
-        }
-    }
-
-    previousReadings[buttonId] = current_reading;
-    return isPressed;
-}
-
 void runTask1() {
-  int delayTime = 400;
-  
-  delay(delayTime);
-
   while (true)
   {
-    if (isButtonPressed(RED_BUTTON_INDEX)) {
+    if (redDebounceButton->isPressed()) {
         turnLeds();
     }
-    if (isButtonPressed(GREEN_BUTTON_INDEX)) {
+    if (greenDebounceButton->isPressed()) {
         switchColor();
         if (turnedOn)
             showColor();
@@ -106,8 +71,10 @@ void setup() {
   initializer.initLCD();
   LiquidCrystal_I2C* lcd = initializer.getLCD();
 
+  greenDebounceButton = new DebounceButton(GREEN_BUTTON);
+  redDebounceButton = new DebounceButton(RED_BUTTON);
+
   initializeForTask1(lcd);
-  Serial.begin(9600);
   runTask1();
 }
 
