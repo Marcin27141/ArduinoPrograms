@@ -19,16 +19,17 @@ class Initializer
 {
   public:
     Initializer();
+    ~Initializer();
     void initEncoder();
     void initRGB();
     void initButtons();
     void initLCD();
     void initSensors();
-    LiquidCrystal_I2C getLCD();
-    DallasTemperature getSensors();
+    LiquidCrystal_I2C* getLCD();
+    DallasTemperature* getSensors();
   private:
-    LiquidCrystal_I2C _lcd;
-    DallasTemperature _sensors;
+    LiquidCrystal_I2C* _lcd;
+    DallasTemperature* _sensors;
 };
 
 #endif

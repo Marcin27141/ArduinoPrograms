@@ -1,10 +1,10 @@
 #include "Initializer.h"
 #include <OneWire.h>
 
-OneWire oneWire(A1);
-
-Initializer::Initializer() : _lcd(0x27, 16, 2), _sensors(&oneWire)
-{
+Initializer::Initializer() {
+  _lcd = new LiquidCrystal_I2C(0x27, 16, 2);
+  OneWire oneWire(A1);
+  _sensors = new DallasTemperature(&oneWire);
 }
 
 void Initializer::initEncoder() {
@@ -24,21 +24,26 @@ void Initializer::initButtons() {
 }
 
 void Initializer::initLCD() {
-  _lcd.init();
-  _lcd.clear();
-  _lcd.backlight();
+  _lcd->init();
+  _lcd->clear();
+  _lcd->backlight();
 }
 
-LiquidCrystal_I2C Initializer::getLCD()
+LiquidCrystal_I2C* Initializer::getLCD()
 {
     return _lcd;
 }
 
 void Initializer::initSensors() {
-  _sensors.begin();
+  _sensors->begin();
 }
 
-DallasTemperature Initializer::getSensors()
+DallasTemperature* Initializer::getSensors()
 {
     return _sensors;
+}
+
+Initializer::~Initializer() {
+  delete _lcd;
+  delete _sensors;
 }
