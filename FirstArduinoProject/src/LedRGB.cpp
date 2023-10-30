@@ -43,7 +43,7 @@ void LedRGB::lightColor(int ledIndex) {
 
 void LedRGB::lightColor(int ledIndex, int intensity) {
     if (intensityIsInRange(intensity)) {
-        _leds[ledIndex] =intensity;
+        _ledsStates[ledIndex] = intensity;
         showColorsIfTurnedOn();
     }
 }
