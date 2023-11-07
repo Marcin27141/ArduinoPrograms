@@ -41,6 +41,19 @@ void LedRGB::lightColor(int ledIndex) {
     lightColor(ledIndex, MAX_INTENSITY);
 }
 
+void LedRGB::turnOffColor(int ledIndex) {
+    _ledsStates[ledIndex] = LOW;
+    showColorsIfTurnedOn();
+}
+
+void LedRGB::turnColor(int ledIndex) {
+    if (_ledsStates[ledIndex] == LOW) {
+        lightColor(ledIndex);
+    }
+    else
+        turnOffColor(ledIndex);
+}
+
 void LedRGB::lightColor(int ledIndex, int intensity) {
     if (intensityIsInRange(intensity)) {
         _ledsStates[ledIndex] = intensity;

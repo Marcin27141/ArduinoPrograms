@@ -14,6 +14,8 @@ class LedRGB
     void lightOneColor(int ledIndex);
     void lightOneColor(int ledIndex, int intensity);
     void lightColor(int ledIndex);
+    void turnOffColor(int ledIndex);
+    void turnColor(int ledIndex);
     void lightColor(int ledIndex, int intensity);
     void setActiveColor(int ledIndex);
     int setFollowingColor(int currentColorIndex);
