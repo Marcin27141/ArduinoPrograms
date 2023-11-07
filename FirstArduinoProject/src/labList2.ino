@@ -42,7 +42,6 @@
 //   initializer.initButtons();
 //   initializer.initLCD(&lcd);
 
-//   lcd = initializer.getLCD();
 //   ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
 //   greenDebounceButton = new DebounceButton(GREEN_BUTTON);
 //   redDebounceButton = new DebounceButton(RED_BUTTON);
@@ -90,7 +89,6 @@
 //   initializer.initButtons();
 //   initializer.initLCD(&lcd);
 
-//   lcd = initializer.getLCD();
 //   ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
 //   greenDebounceButton = new DebounceButton(GREEN_BUTTON);
 //   redDebounceButton = new DebounceButton(RED_BUTTON);
@@ -159,7 +157,6 @@
 //   initializer.initButtons();
 //   initializer.initLCD(&lcd);
 
-//   lcd = initializer.getLCD();
 //   ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
 //   greenDebounceButton = new DebounceButton(GREEN_BUTTON);
 //   redDebounceButton = new DebounceButton(RED_BUTTON);
