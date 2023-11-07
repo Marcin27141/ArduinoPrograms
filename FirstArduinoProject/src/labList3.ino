@@ -67,94 +67,63 @@
 
 //task 3
 //stopwatch program, green button stops/resumes, red button resets
-#include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27,16,2);
+// #include <LiquidCrystal_I2C.h>
+// LiquidCrystal_I2C lcd(0x27,16,2);
 
-unsigned long lastTimeTurnedOn = 0UL;
-unsigned long timeElapsed = 0UL;
-bool stopwatchRunning = false;
+// DebounceButton* greenDebounceButton;
+// DebounceButton* redDebounceButton;
 
-int getSecondsFromBeginning() {
-  return (timeElapsed + millis() - lastTimeTurnedOn)/1000;
-}
+// unsigned long lastTimeTurnedOn = 0UL;
+// unsigned long timeElapsed = 0UL;
+// bool stopwatchRunning = false;
 
-void printMillisFromStart() {
-  lcd.setCursor(0, 1);
-  lcd.print(getSecondsFromBeginning());
-}
+// int getSecondsFromBeginning() {
+//   return (timeElapsed + millis() - lastTimeTurnedOn)/1000;
+// }
 
-#define DEBOUNCE_PERIOD 10UL
-int buttons[] = {GREEN_BUTTON, RED_BUTTON};
-int debouncedStates[] = {HIGH, HIGH};
-int previousReadings[] = {HIGH, HIGH};
-unsigned long lastChanged[] = {0UL, 0UL};
+// void printSecondsFromStart() {
+//   lcd.setCursor(0, 1);
+//   lcd.print(getSecondsFromBeginning());
+// }
 
-bool isButtonPressed(int buttonId) {
-    bool isPressed = false;
-    int current_reading = digitalRead(buttons[buttonId]);
+// void switchTheStopwatchState() {
+//   if (stopwatchRunning == false) {
+//     lastTimeTurnedOn = millis();
+//     stopwatchRunning = true;
+//   }
+//   else {
+//     timeElapsed += (millis() - lastTimeTurnedOn);
+//     stopwatchRunning = false;
+//   }
+// }
 
-    if (previousReadings[buttonId] != current_reading)
-    {
-        lastChanged[buttonId] = millis();
-    }
+// void resetStopwatch() {
+//   lcd.setCursor(0, 1);
+//   lcd.print("                ");
+//   stopwatchRunning = false;
+//   lastTimeTurnedOn = 0UL;
+//   timeElapsed = 0UL;
+// }
 
-    if (millis() - lastChanged[buttonId] > DEBOUNCE_PERIOD)
-    {
-        if(current_reading != debouncedStates[buttonId])
-        {
-            if (debouncedStates[buttonId] == HIGH && current_reading == LOW)
-            {
-                isPressed = true;
-            }
-            debouncedStates[buttonId] = current_reading;
-        }
-    }
+// void setup() {
+//     Initializer initializer = Initializer();
+//     initializer.initButtons();
 
-    previousReadings[buttonId] = current_reading;
-    return isPressed;
-}
+//     greenDebounceButton = new DebounceButton(GREEN_BUTTON);
+//     redDebounceButton = new DebounceButton(RED_BUTTON);
 
-void switchTheStopwatchState() {
-  if (stopwatchRunning == false) {
-    lastTimeTurnedOn = millis();
-    stopwatchRunning = true;
-  }
-  else {
-    timeElapsed += (millis() - lastTimeTurnedOn);
-    stopwatchRunning = false;
-  }
-}
+//     initializer.initLCD(&lcd);
+//     lcd.print("Time elapsed:");
+// }
 
-void resetStopwatch() {
-  lcd.setCursor(0, 1);
-  lcd.print("                ");
-  stopwatchRunning = false;
-  lastTimeTurnedOn = 0UL;
-  timeElapsed = 0UL;
-}
-
-void setup() {
-  lcd.init();
-  lcd.clear();
-  lcd.backlight();
-  
-  pinMode(RED_BUTTON, INPUT_PULLUP);
-  pinMode(GREEN_BUTTON, INPUT_PULLUP);
-
-  lcd.print("Time elapsed:");
-}
-
-int greenButtonId = 0;
-int redButtonId = 1;
-
-void loop() {
-  if (isButtonPressed(greenButtonId)) {
-    switchTheStopwatchState();
-  }
-  if (isButtonPressed(redButtonId)) {
-    resetStopwatch();
-  }
-  if (stopwatchRunning == true) {
-    printMillisFromStart();
-  }  
-}
+// void loop() {
+//   if (greenDebounceButton->isPressed()) {
+//     switchTheStopwatchState();
+//   }
+//   if (redDebounceButton->isPressed()) {
+//     resetStopwatch();
+//   }
+//   if (stopwatchRunning == true) {
+//     printSecondsFromStart();
+//   }  
+// }

@@ -2,9 +2,6 @@
 #include <OneWire.h>
 
 Initializer::Initializer() {
-  _lcd = new LiquidCrystal_I2C(0x27, 16, 2);
-  OneWire oneWire(A1);
-  _sensors = new DallasTemperature(&oneWire);
 }
 
 void Initializer::initEncoder() {
@@ -23,27 +20,13 @@ void Initializer::initButtons() {
   pinMode(GREEN_BUTTON, INPUT_PULLUP);
 }
 
-void Initializer::initLCD() {
-  _lcd->init();
-  _lcd->clear();
-  _lcd->backlight();
+void Initializer::initLCD(LiquidCrystal_I2C* lcdPtr) {
+  lcdPtr->init();
+  lcdPtr->clear();
+  lcdPtr->backlight();
 }
 
-LiquidCrystal_I2C* Initializer::getLCD()
-{
-    return _lcd;
-}
 
-void Initializer::initSensors() {
-  _sensors->begin();
-}
-
-DallasTemperature* Initializer::getSensors()
-{
-    return _sensors;
-}
-
-Initializer::~Initializer() {
-  delete _lcd;
-  delete _sensors;
+void Initializer::initSensors(DallasTemperature* sensors) {
+  sensors->begin();
 }

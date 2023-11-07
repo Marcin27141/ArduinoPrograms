@@ -1,10 +1,12 @@
 // #include <Initializer.h>
 // #include <DebounceButton.h>
 // #include <LedRGB.h>
+// #include <LiquidCrystal_I2C.h>
+
+// LiquidCrystal_I2C lcd(0x27,16,2);
 
 //----------------------task1------------------------
 //green button changes color, red button turns on/off
-// LiquidCrystal_I2C* lcd;
 // LedRGB* ledRGB;
 // DebounceButton* greenDebounceButton;
 // DebounceButton* redDebounceButton;
@@ -13,10 +15,10 @@
 //   ledRGB->setActiveColor(RED_LED_INDEX);
 //   ledRGB->turnOn();
 
-//   lcd->setCursor(0, 0);
-//   lcd->print("GREEN: COLOR");
-//   lcd->setCursor(0, 1);
-//   lcd->print("RED: TURN ON/OFF");
+//   lcd.setCursor(0, 0);
+//   lcd.print("GREEN: COLOR");
+//   lcd.setCursor(0, 1);
+//   lcd.print("RED: TURN ON/OFF");
 // }
 
 // void runTask1() {
@@ -38,7 +40,7 @@
 //   Initializer initializer = Initializer();
 //   initializer.initRGB();
 //   initializer.initButtons();
-//   initializer.initLCD();
+//   initializer.initLCD(&lcd);
 
 //   lcd = initializer.getLCD();
 //   ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
@@ -54,16 +56,15 @@
 
 //------------------------task2-----------------------------
 //LED PWM presentation - red button makes led darker, green button - brighter
-// LiquidCrystal_I2C* lcd;
 // LedRGB* ledRGB;
 // DebounceButton* greenDebounceButton;
 // DebounceButton* redDebounceButton;
 
 // void initializeForTask2() {
-//   lcd->setCursor(0, 0);
-//   lcd->print("GREEN: BRIGHTER");
-//   lcd->setCursor(0, 1);
-//   lcd->print("RED: DARKER");
+//   lcd.setCursor(0, 0);
+//   lcd.print("GREEN: BRIGHTER");
+//   lcd.setCursor(0, 1);
+//   lcd.print("RED: DARKER");
 
 //   ledRGB->setActiveColor(GREEN_LED_INDEX);
 //   ledRGB->turnOn();
@@ -87,7 +88,7 @@
 //   Initializer initializer = Initializer();
 //   initializer.initRGB();
 //   initializer.initButtons();
-//   initializer.initLCD();
+//   initializer.initLCD(&lcd);
 
 //   lcd = initializer.getLCD();
 //   ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
@@ -103,7 +104,6 @@
 
 // //------------------------task3-----------------------------
 // //on green button press, led fluently changes colors: red, green, blue, red, ... 
-// LiquidCrystal_I2C* lcd;
 // LedRGB* ledRGB;
 // DebounceButton* greenDebounceButton;
 // DebounceButton* redDebounceButton;
@@ -114,10 +114,10 @@
 // int blueAnalogVal = 0;
 
 // void initializeForTask3() {
-//   lcd->clear();
-//   lcd->print("PRESS GREEN TO");
-//   lcd->setCursor(0, 1);
-//   lcd->print("CHANGE COLOR");
+//   lcd.clear();
+//   lcd.print("PRESS GREEN TO");
+//   lcd.setCursor(0, 1);
+//   lcd.print("CHANGE COLOR");
 
 //   ledRGB->lightOneColor(RED_LED_INDEX, redAnalogVal);
 //   ledRGB->turnOn();
@@ -157,7 +157,7 @@
 //   Initializer initializer = Initializer();
 //   initializer.initRGB();
 //   initializer.initButtons();
-//   initializer.initLCD();
+//   initializer.initLCD(&lcd);
 
 //   lcd = initializer.getLCD();
 //   ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
