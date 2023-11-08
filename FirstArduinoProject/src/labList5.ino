@@ -1,7 +1,7 @@
 #include <Initializer.h>
 #include <DebounceButton.h>
-#include <InterruptEncoder.h>
 #include <LedRGB.h>
+#include <InterruptEncoder.h>
 #include <LiquidCrystal_I2C.h>
 #include <util/atomic.h>
 
@@ -68,11 +68,12 @@ void printMenu() {
 
 void checkMenuScroll() {
     bool wasScrolled = false;
-    if (encoder->isTurnedRight()) {
+    int scrollDirection = encoder->getDirection();
+    if (scrollDirection == TURNED_RIGHT) {
         wasScrolled = true;
         menuVisibleItem = (menuVisibleItem + 1) % NUMBER_OF_MENU_OPTIONS;
     }
-    if (encoder->isTurnedLeft()) {
+    if (scrollDirection == TURNED_LEFT) {
         wasScrolled = true;
         menuVisibleItem = (menuVisibleItem - 1 < 0) ? NUMBER_OF_MENU_OPTIONS - 1 : menuVisibleItem - 1;
     }       
@@ -96,12 +97,13 @@ void setColorIntensity(int colorIdx) {
 
   while (!redDebounceButton->isPressed()) {
     bool intensityChanged = false;
-    if (encoder->isTurnedRight() && colorIntensities[colorIdx] < 255) {
+    int scrollDirection = encoder->getDirection();
+    if (scrollDirection == TURNED_RIGHT && colorIntensities[colorIdx] < 255) {
       colorIntensities[colorIdx] += 15;
       intensityChanged = true;
     }
         
-    if (encoder->isTurnedLeft() && colorIntensities[colorIdx] > 0) {
+    if (scrollDirection == TURNED_LEFT && colorIntensities[colorIdx] > 0) {
         colorIntensities[colorIdx] -= 15; 
         intensityChanged = true;
     }   
@@ -155,14 +157,10 @@ void setup()
 
 void loop()
 {
-  // if (isScrollingMenu)
-  //   checkMenuScroll();
-  // if (isScrollingMenu && greenDebounceButton->isPressed()) {
-  //   isScrollingMenu = false;
-  //   switchToChosenOption();
-  // }
-  if (encoder->isTurnedRight())
-    Serial.println("right");
-  if (encoder->isTurnedLeft())
-    Serial.println("left");
+  if (isScrollingMenu)
+    checkMenuScroll();
+  if (isScrollingMenu && greenDebounceButton->isPressed()) {
+    isScrollingMenu = false;
+    switchToChosenOption();
+  }
 }

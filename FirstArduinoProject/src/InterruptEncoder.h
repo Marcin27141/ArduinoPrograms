@@ -3,17 +3,17 @@
 
 #include <Arduino.h>
 
+static const int NOT_TURNED = 0;
+static const int TURNED_RIGHT = 1;
+static const int TURNED_LEFT = 2;
+
 class InterruptEncoder {
   public:
     InterruptEncoder();
-    bool isTurnedRight();
-    bool isTurnedLeft();
+    int getDirection();
   private:
-    int isTurned();
     unsigned long _debounceTime;
-    volatile int _debouncedState;
-    volatile int _previousReading;
-    volatile unsigned long _lastChanged;
+    unsigned long _lastChanged;
 };
 
 #endif

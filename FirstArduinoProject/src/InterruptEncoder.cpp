@@ -3,10 +3,6 @@
 #include <util/atomic.h>
 #include <Initializer.h>
 
-#define NOT_TURNED 0
-static const int TURNED_RIGHT = 1;
-#define TURNED_LEFT 2
-
 volatile int encoder1 = HIGH;
 volatile int encoder2 = HIGH;
 volatile unsigned long encoderTimestamp = 0UL;
@@ -20,15 +16,13 @@ ISR(PCINT1_vect)
 
 InterruptEncoder::InterruptEncoder() {
   _debounceTime = DEBEOUNCE_TIME;
-  _debouncedState = HIGH;
-  _previousReading = HIGH;
   _lastChanged = 0UL;
 
     PCICR |= (1 << PCIE1);
     PCMSK1 |= (1 << PCINT10);
 }
 
-int InterruptEncoder::isTurned() {
+int InterruptEncoder::getDirection() {
     int result = NOT_TURNED;
     int en1;
     int en2;
@@ -41,7 +35,7 @@ int InterruptEncoder::isTurned() {
         timestamp = encoderTimestamp;
     }
 
-    if (en1 == LOW && _debouncedState == HIGH && timestamp > _lastChanged + _debounceTime)
+    if (en1 == LOW && timestamp > _lastChanged + _debounceTime)
     {
         if (en2 == HIGH)
             result = TURNED_RIGHT;
@@ -49,25 +43,6 @@ int InterruptEncoder::isTurned() {
             result = TURNED_LEFT;
 
         _lastChanged = timestamp;
-    }
-    _previousReading = en1;    
+    }  
     return result;
   }
-
-bool InterruptEncoder::isTurnedRight() {
-    int result = isTurned();
-    if (result == TURNED_RIGHT) {
-        Serial.print("Turned right true");
-    }
-        
-    return result == TURNED_RIGHT;
-}
-
-bool InterruptEncoder::isTurnedLeft() {
-    int result = isTurned();
-    if (result == TURNED_LEFT) {
-        Serial.print("Turned left true");
-    }
-        
-    return result == TURNED_LEFT;
-}
