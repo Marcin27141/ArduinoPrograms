@@ -5,7 +5,6 @@
 
 const int GREEN_BUTTON_INDEX = 0;
 const int RED_BUTTON_INDEX = 1;
-const unsigned long DEBOUNCE_TIME = 10UL;
 
 class DebounceButton
 {

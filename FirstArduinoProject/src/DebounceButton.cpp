@@ -1,5 +1,6 @@
 #include <DebounceButton.h>
 #include <Arduino.h>
+#include <Initializer.h>
 
 DebounceButton::DebounceButton(int pin, unsigned long debounceTime) {
   _debounceTime = debounceTime;
@@ -9,7 +10,7 @@ DebounceButton::DebounceButton(int pin, unsigned long debounceTime) {
   _lastChanged = 0UL;
 }
 
-DebounceButton::DebounceButton(int pin) : DebounceButton(pin, DEBOUNCE_TIME) {
+DebounceButton::DebounceButton(int pin) : DebounceButton(pin, DEBEOUNCE_TIME) {
 }
 
 bool DebounceButton::isPressed() {

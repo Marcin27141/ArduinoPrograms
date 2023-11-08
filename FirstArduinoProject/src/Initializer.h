@@ -6,6 +6,8 @@
 #include <Wire.h>
 #include <DallasTemperature.h>
 
+static const int DEBEOUNCE_TIME = 50UL;
+
 static const int POTENTIOMETER = A0;
 static const int LED_RED = 6;
 static const int LED_GREEN = 5;
