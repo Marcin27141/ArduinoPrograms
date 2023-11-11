@@ -2,8 +2,15 @@
 #include <LiquidCrystal_I2C.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <Initializer.h>
 
 LiquidCrystal_I2C lcd(0x27,16,2);
+#define LCD_ROW_INSIDE 0
+#define LCD_ROW_OUTSIDE 1
+
+// #define LED_RED 6
+// #define LED_GREEN 5
+// #define LED_BLUE 3
 
 #define ONE_WIRE A1
 OneWire oneWire(ONE_WIRE);
@@ -11,16 +18,27 @@ DallasTemperature sensors(&oneWire);
 
 DeviceAddress mySensor = { 0x10, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xFB };
 #define MAIN_SENSOR_IDX 0
-#define LCD_ROW_INSIDE 0
-#define LCD_ROW_OUTSIDE 1
+
 
 #define MAX_TEMP 125
+#define LOWER_DECENT_TEMP 19
+#define UPPER_DECENT_TEMP 26
+
+float minTemp;
+float maxTemp;
 
 void initLCD()
 {
   lcd.init();
   lcd.clear();
   lcd.backlight();
+}
+
+void initRGB()
+{
+  pinMode(LED_RED, OUTPUT);
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_BLUE, OUTPUT);
 }
 
 void printSerialNumber(int sensorIdx) {
@@ -33,6 +51,11 @@ void printSerialNumber(int sensorIdx) {
       Serial.print(" ");
     }
     Serial.println();
+}
+
+float getFilteredTempValue(float reading) {
+    if (reading > MAX_TEMP) return 0;
+    return reading;
 }
 
 void identifySensorsByTemp() {
@@ -60,30 +83,67 @@ void printInitialLCD() {
     lcd.print("Outside:");
 }
 
+void turnOffLED() {
+    digitalWrite(LED_RED, LOW);
+    digitalWrite(LED_GREEN, LOW);
+    digitalWrite(LED_BLUE, LOW);
+}
+
+void showTempOnLED(float temp) {
+    turnOffLED();
+    if (temp < LOWER_DECENT_TEMP)
+        digitalWrite(LED_BLUE, HIGH);
+    else if (temp > UPPER_DECENT_TEMP)
+        digitalWrite(LED_RED, HIGH);
+    else
+        digitalWrite(LED_GREEN, HIGH);
+}
+
 void printTempOnLcd(int row, float temp) {
     // lcd.setCursor(8, row);
     // char buffer[40];
     // sprintf(buffer, "%8s", String(temp, 4).c_str());
-    if (temp > MAX_TEMP) temp = 0;
-    lcd.setCursor(11, row);
+    lcd.setCursor(10, row);
     char buffer[5];
     sprintf(buffer, "%5s", String(temp, 1).c_str());
     lcd.print(buffer);
+    lcd.print("C");
+}
+
+void readInitialTemp() {
+    sensors.requestTemperatures();
+    float tempOutside = sensors.getTempCByIndex(MAIN_SENSOR_IDX);
+    tempOutside = getFilteredTempValue(tempOutside);
+    minTemp = tempOutside;
+    maxTemp = tempOutside;
+}
+
+void noteIfExtremeValue(float temp) {
+    if (temp < minTemp)
+        minTemp = temp;
+    else if (temp > maxTemp)
+        maxTemp = temp;
 }
 
 void setup()
 {
     sensors.begin();
     initLCD();
+
+    readInitialTemp();
     printInitialLCD();
 }
 
 void loop()
 {
   sensors.requestTemperatures();
-  float temperatureCelsius = sensors.getTempCByIndex(MAIN_SENSOR_IDX);
+  float tempOutside = sensors.getTempCByIndex(MAIN_SENSOR_IDX);
+  tempOutside = getFilteredTempValue(tempOutside);
+  noteIfExtremeValue(tempOutside);
   //float temperatureFahrenheit = sensors.toFahrenheit(temperatureCelsius);
+
   printTempOnLcd(LCD_ROW_INSIDE, 17.4);
-  printTempOnLcd(LCD_ROW_OUTSIDE, temperatureCelsius);
+  printTempOnLcd(LCD_ROW_OUTSIDE, tempOutside);
+  showTempOnLED(tempOutside);
   delay(1000);
 }
