@@ -1,0 +1,23 @@
+{
+  "name": "LedRGB",
+  "keywords": "led, rgb",
+  "description": "Arduino Library for handling RGB LED",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://example.com/LedRGB.git"
+  },
+  "authors": 
+  [
+    {
+      "name": "Marcin Tkocz",
+      "email": "marcin.tkocz@example.com",
+      "url": "http://marcin.tkocz.example.com",
+      "maintainer": true
+    }
+  ],
+  "version": "1.0.0",
+  "homepage": "hhttps://example.com/LedRGB",
+  "frameworks": "arduino",
+  "platforms": "*"
+}

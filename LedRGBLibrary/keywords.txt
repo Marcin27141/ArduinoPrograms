@@ -1,0 +1,41 @@
+#######################################
+# Syntax Coloring Map For LedRGB
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+LedRGB	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+lightRgb KEYWORD2
+lightPredefinedColor KEYWORD2
+lightOneColor KEYWORD2
+lightOneColor KEYWORD2
+lightColor KEYWORD2
+lightColor KEYWORD2
+turnOffColor KEYWORD2
+turnColor KEYWORD2
+setActiveColor KEYWORD2
+setFollowingColor KEYWORD2
+showColorsIfTurnedOn KEYWORD2
+turnOn KEYWORD2
+turnOff KEYWORD2
+turnState KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+RED_LED_INDEX LITERAL1
+GREEN_LED_INDEX LITERAL1
+BLUE_LED_INDEX LITERAL1
+RED LITERAL1
+GREEN LITERAL1
+BLUE LITERAL1
+YELLOW LITERAL1
+CYAN LITERAL1
+MAGENTA LITERAL1
+BLACK LITERAL1
+WHITE LITERAL1
