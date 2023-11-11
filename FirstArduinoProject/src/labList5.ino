@@ -6,10 +6,10 @@
 // #include <util/atomic.h>
 
 // LiquidCrystal_I2C lcd(0x27,16,2);
-// LedRGB* ledRGB;
-// DebounceButton* greenDebounceButton;
-// DebounceButton* redDebounceButton;
-// InterruptEncoder* encoder;
+// LedRGB ledRGB(LED_RED, LED_GREEN, LED_BLUE);
+// DebounceButton greenDebounceButton(GREEN_BUTTON);
+// DebounceButton redDebounceButton(RED_BUTTON);
+// InterruptEncoder encoder;
 
 // bool isScrollingMenu = true;
 // int menuVisibleItem = 0;
@@ -68,7 +68,7 @@
 
 // void checkMenuScroll() {
 //     bool wasScrolled = false;
-//     int scrollDirection = encoder->getDirection();
+//     int scrollDirection = encoder.getDirection();
 //     if (scrollDirection == TURNED_RIGHT) {
 //         wasScrolled = true;
 //         menuVisibleItem = (menuVisibleItem + 1) % NUMBER_OF_MENU_OPTIONS;
@@ -95,9 +95,9 @@
 //   lcd.clear();
 //   printColorIntensityPercent(getColorName(colorIdx), colorIntensities[colorIdx]);
 
-//   while (!redDebounceButton->isPressed()) {
+//   while (!redDebounceButton.isPressed()) {
 //     bool intensityChanged = false;
-//     int scrollDirection = encoder->getDirection();
+//     int scrollDirection = encoder.getDirection();
 //     if (scrollDirection == TURNED_RIGHT && colorIntensities[colorIdx] < 255) {
 //       colorIntensities[colorIdx] += 15;
 //       intensityChanged = true;
@@ -141,15 +141,7 @@
 // void setup()
 // {
 //     Initializer initializer = Initializer();
-//     initializer.initRGB();
-//     initializer.initButtons();
 //     initializer.initLCD(&lcd);
-//     initializer.initEncoder();
-
-//     ledRGB = new LedRGB(LED_RED, LED_GREEN, LED_BLUE);
-//     greenDebounceButton = new DebounceButton(GREEN_BUTTON);
-//     redDebounceButton = new DebounceButton(RED_BUTTON);
-//     encoder = new InterruptEncoder();
 
 //     printMenu();
 //     Serial.begin(9600);
@@ -159,7 +151,7 @@
 // {
 //   if (isScrollingMenu)
 //     checkMenuScroll();
-//   if (isScrollingMenu && greenDebounceButton->isPressed()) {
+//   if (isScrollingMenu && greenDebounceButton.isPressed()) {
 //     isScrollingMenu = false;
 //     switchToChosenOption();
 //   }

@@ -15,6 +15,9 @@ ISR(PCINT1_vect)
 }
 
 InterruptEncoder::InterruptEncoder() {
+    pinMode(ENCODER1, INPUT_PULLUP);
+    pinMode(ENCODER2, INPUT_PULLUP);
+
   _debounceTime = DEBEOUNCE_TIME;
   _lastChanged = 0UL;
 

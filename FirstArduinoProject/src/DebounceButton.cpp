@@ -3,6 +3,8 @@
 #include <Initializer.h>
 
 DebounceButton::DebounceButton(int pin, unsigned long debounceTime) {
+  pinMode(pin, INPUT_PULLUP);
+
   _debounceTime = debounceTime;
   _pin = pin;
   _debouncedState = HIGH;
