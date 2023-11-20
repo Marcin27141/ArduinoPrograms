@@ -14,6 +14,7 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 // #define RED_BUTTON 2
 #define DEBOUNCING_PERIOD 100
 bool isShowingTemperatures = true;
+int const MAX_EXTREME_TEMPERATURES_DISPLAY = 5000;
 
 
 #define ONE_WIRE A1
@@ -193,19 +194,27 @@ void setup()
 }
 
 void switchMenus() {
-    if (isShowingTemperatures) {
-        isShowingTemperatures = false;
+    if (!isShowingTemperatures) {
         printExtremeTemperaturesOnLcd();
     } else {
-        isShowingTemperatures = true;
         printInitialLCD();
     }
 }
 
+unsigned long lastTimeExtremesShown = 0UL;
+
 void loop()
 {
-    if (redButtonIsPressed())
+    if (redButtonIsPressed()) {
+        isShowingTemperatures = !isShowingTemperatures;
+        if (!isShowingTemperatures)
+            lastTimeExtremesShown = millis();
         switchMenus();
+    }
+    if (!isShowingTemperatures && millis() - lastTimeExtremesShown > MAX_EXTREME_TEMPERATURES_DISPLAY) {
+        isShowingTemperatures = true;
+        switchMenus();
+    }
     if (isShowingTemperatures && millis() - lastSensorReading > READINGS_WINDOW) {
         lastSensorReading = millis();
         sensors.requestTemperatures();
